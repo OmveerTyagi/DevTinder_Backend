@@ -1,0 +1,20 @@
+{
+  "name": "devtinder",
+  "version": "1.0.0",
+  "description": "This is a Friendship tool for Developers",
+  "main": "index.js",
+  "scripts": {
+     "dev":"nodemon src/app.js"
+  },
+  "keywords": [
+    "NodeJS",
+    "Express",
+    "MongoDb",
+    "Moongoose"
+  ],
+  "author": "Omveer Tyagi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
