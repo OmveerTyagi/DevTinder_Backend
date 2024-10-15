@@ -1,23 +1,26 @@
-const adminAuth = (req,res,next)=>{
-    const token = "xyz"
-    const authorizedAdminToken ="yz";
-    if(authorizedAdminToken !== token){
-        res.status(401).send("You are not admin")
+const JWT = require("jsonwebtoken");
+const User = require("../models/user");
+const userAuth = async(req,res,next)=>{
+    
+
+    try{
+        const {token} = req.cookies;
+        if(!token){
+        throw new Error("Invalid Token")
     }
-    else{
-        next()
+    const decodedMessage = await JWT.verify(token,"ABCD1234",{expiresIn:"1h"});
+    const {_id} = decodedMessage;
+    const user = await User.findOne({_id});
+    if(!user){
+        throw new Error("User is Not for")
+        
+    }
+    req.user = user;
+        next();
+}
+    catch (error){
+        res.status(404).send("Error Occured " +error.message);
     }
 }
 
-const userAuth = (req,res,next)=>{
-    const token = "xyz"
-    const authorizedAdminToken ="xyz";
-    if(authorizedAdminToken !== token){
-        res.status(401).send("You are not admin")
-    }
-    else{
-        next()
-    }
-}
-
-module.exports = {adminAuth, userAuth};
+module.exports = {  userAuth};
