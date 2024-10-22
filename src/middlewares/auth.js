@@ -12,7 +12,7 @@ const userAuth = async(req,res,next)=>{
     const {_id} = decodedMessage;
     const user = await User.findOne({_id});
     if(!user){
-        throw new Error("User is Not for")
+        throw new Error("User is Not found")
         
     }
     req.user = user;

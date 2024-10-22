@@ -9,88 +9,23 @@ const validator = require("validator");
 const cookieParser = require("cookie-parser");
 const JWT = require("jsonwebtoken");
 const { userAuth } = require('./middlewares/auth');
-
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
+const cors = require("cors");
+app.use(cors({
+  origin:"http://localhost:5173",
+  credentials:true
+}));
 app.use(express.json());
 app.use(cookieParser());
 
- 
-app.post("/signup", async(req,res) =>{
-     // validation
-     validateSignup(req);
 
-     // encryption of password
-     const {firstName, lastName, email, password} = req.body;
-     const hashedPassword = await bcrypt.hash(password, 10);
-    //  console.log("hashed Password" +hashedPassword);
-     
-    
-
-     // creating an instance
-    const user = new User({
-        firstName,
-        lastName,
-        email,
-        password:hashedPassword
-    });
-    try{
-        await user.save();
-    res.send("User Added successfully");
-
-    }
-    catch (err){
-        res.status(400).send("User not Added SuccessFully" + err.message );
-        // console.log();
-        
-    }  
-});
-
-app.post("/login", async(req,res) =>{
-    try {
-        const {email, password} =req.body;
-        if(!validator.isEmail(email)){
-            res.send("Invalid email")
-        }
-
-        const user = await User.findOne({email:email});
-        // console.log(user);
-        if(!user){
-            throw new Error("Invalid crednetials")
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if(!isPasswordValid){
-            throw new Error("Invalid Credentials")
-        }
-        else{
-            //creating a JWT
-            const token = JWT.sign({_id : user._id}, "ABCD1234");
-            console.log(token);
-            
-
-            //sending a cookie
-            res.cookie("token",token);
-
-
-            res.send("Login Successful");
-        }
-        
-        
-    } catch (err) {
-        res.status(400).send("invalid credentials" + err.message );
-        
-    }
-})
-
-app.get("/profile",userAuth, async(req,res,next) =>{
-    try {
-         const user = req.user
-        res.send(user);
-        
-        
-    } catch (error) {
-        res.status(400).send("invalid credentials" + err.message );
-    }
-})
+app.use("/",authRouter);
+app.use("/",profileRouter);
+app.use("/",requestRouter);
+app.use("/",userRouter);
 
 app.post("/sendConnectionRequest",userAuth, (req,res,next) =>{
     try {
@@ -104,7 +39,7 @@ app.post("/sendConnectionRequest",userAuth, (req,res,next) =>{
 app.delete("/deleteUserById",async(req,res) =>{
 
     const id = req.body._id;
-     console.log(id);
+    
     try{
         await User.findByIdAndDelete({ _id:id});
         res.send("User Successfully deleted from the database");
@@ -140,7 +75,7 @@ app.patch("/user/:userId", async (req, res) => {
         returnDocument: "after",
         runValidators: true,
       });
-      console.log(user);
+       
       res.send("User updated successfully");
     } catch (err) {
       res.status(400).send("UPDATE FAILED:" + err.message);
