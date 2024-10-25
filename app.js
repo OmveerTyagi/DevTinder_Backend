@@ -1,18 +1,18 @@
 const express = require('express');
 const app = express(); 
-const connectDB =require("./config/database");
-const User = require("./models/user");
+const connectDB =require("./src/config/database");
+const User = require("./src/models/user");
 const { ReturnDocument } = require('mongodb');
-const {validateSignup } = require("./utils/validator");
+const {validateSignup } = require("./src/utils/validator");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const cookieParser = require("cookie-parser");
 const JWT = require("jsonwebtoken");
-const { userAuth } = require('./middlewares/auth');
-const authRouter = require("./routes/auth");
-const profileRouter = require("./routes/profile");
-const requestRouter = require("./routes/request");
-const userRouter = require("./routes/user");
+const { userAuth } = require('./src/middlewares/auth');
+const authRouter = require("./src/routes/auth");
+const profileRouter = require("./src/routes/profile");
+const requestRouter = require("./src/routes/request");
+const userRouter = require("./src/routes/user");
 const cors = require("cors");
 app.use(cors({
   origin:"http://localhost:5173",
