@@ -15,7 +15,7 @@ const requestRouter = require("./src/routes/request");
 const userRouter = require("./src/routes/user");
 const cors = require("cors");
 app.use(cors({
-  origin:"http://localhost:5173",
+  origin:"https://chillmates.netlify.app",
   credentials:true
 }));
 app.use(express.json());
